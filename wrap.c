@@ -1,5 +1,7 @@
-#include <linear.h>
 #include <stdlib.h>
+#include <string.h>
+
+#include <linear.h>
 
 #include "wrap.h"
 
@@ -61,4 +63,11 @@ void problem_add_train_inst(problem_t *problem, feature_node_t *nodes,
   problem->y[problem->l - 1] = label;
   problem->x = realloc(problem->x, problem->l * sizeof(feature_node_t *));
   problem->x[problem->l - 1] = nodes;
+}
+
+parameter_t *parameter_new()
+{
+  parameter_t *param = malloc(sizeof(parameter_t));
+  memset(param, 0, sizeof(parameter_t));
+  return param;
 }
