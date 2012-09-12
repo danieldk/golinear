@@ -71,3 +71,28 @@ parameter_t *parameter_new()
   memset(param, 0, sizeof(parameter_t));
   return param;
 }
+
+char const *check_parameter_wrap(problem_t *prob, parameter_t *param)
+{
+  return check_parameter(prob, param);
+}
+
+void destroy_param_wrap(parameter_t* param)
+{
+  return destroy_param(param);
+}
+
+void free_and_destroy_model_wrap(model_t *model)
+{
+  free_and_destroy_model(&model);
+}
+
+model_t *train_wrap(problem_t *prob, parameter_t *param)
+{
+  return train(prob, param);
+}
+
+double predict_wrap(model_t const *model, feature_node_t *nodes)
+{
+  return predict(model, nodes);
+}
