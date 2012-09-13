@@ -8,6 +8,8 @@ package golinear
 import "C"
 
 import (
+	"errors"
+	"fmt"
 	"runtime"
 	"sort"
 )
@@ -78,7 +80,12 @@ func cNodes(nodes []FeatureValue) *C.feature_node_t {
 	return n
 }
 
-func (problem *Problem) Add(trainInst TrainingInstance) {
+func (problem *Problem) Add(trainInst TrainingInstance) error {
+	err := verifyFeatureIndices(trainInst.Features)
+	if err != nil {
+		return err
+	}
+
 	features := sortedFeatureVector(trainInst.Features)
 
 	nodes := C.nodes_new(C.size_t(len(features)))
@@ -88,6 +95,8 @@ func (problem *Problem) Add(trainInst TrainingInstance) {
 	}
 
 	C.problem_add_train_inst(problem.problem, nodes, C.double(trainInst.Label))
+
+	return nil
 }
 
 // Helper functions
@@ -99,6 +108,17 @@ func sortedFeatureVector(fv FeatureVector) FeatureVector {
 	sort.Sort(byIndex{sorted})
 
 	return sorted
+}
+
+func verifyFeatureIndices(featureVector FeatureVector) error {
+	for _, fv := range featureVector {
+		if fv.Index < 1 {
+			return errors.New(
+				fmt.Sprintf("Feature index should be at least one: %d:%f", fv.Index, fv.Value))
+		}
+	}
+
+	return nil
 }
 
 // Interface for sorting of feature vectors by feature index.

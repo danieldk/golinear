@@ -17,6 +17,15 @@ func TestSortedFeatureVector(t *testing.T) {
 	compareVectors(t, sorted, check, "sorted")
 }
 
+func TestInvalidIndex(t *testing.T) {
+	p := NewProblem()
+	erronous := FeatureVector{{1, 1}, {2, 0.5}, {0, 1}}
+	err := p.Add(TrainingInstance{0, erronous})
+	if err == nil {
+		t.Error("Erronous feature index should be rejected")
+	}
+}
+
 func compareVectors(t *testing.T, candidate, check FeatureVector, candidateName string) {
 	// Sanity check
 	if len(candidate) != len(check) {
