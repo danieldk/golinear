@@ -1,4 +1,4 @@
-package main
+package word_classification
 
 import (
 	"github.com/danieldk/golinear"
@@ -7,6 +7,12 @@ import (
 type StringFeature struct {
 	Feature string
 	Value   float64
+}
+
+type ModelMetadata struct {
+	FeatureMapping map[string]int
+	ClassMapping   map[string]int
+	Normalizer     float64
 }
 
 func prefixes(word string, n int) []StringFeature {
@@ -41,7 +47,7 @@ func stringFeatureToFeature(features []StringFeature, mapping map[string]int, no
 	return numberedFeatures
 }
 
-func extractFeatures(dict Dictionary) (*golinear.Problem, map[string]int, map[string]int, float64) {
+func ExtractFeatures(dict Dictionary) (*golinear.Problem, ModelMetadata) {
 	problem := golinear.NewProblem()
 	//featureMap := make(map[string]int)
 	featureMapping := make(map[string]int)
@@ -80,5 +86,5 @@ func extractFeatures(dict Dictionary) (*golinear.Problem, map[string]int, map[st
 		}
 	}
 
-	return problem, featureMapping, tagMapping, float64(norm)
+	return problem, ModelMetadata{featureMapping, tagMapping, float64(norm)}
 }

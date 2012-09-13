@@ -1,4 +1,4 @@
-package main
+package word_classification
 
 import (
 	"bufio"
@@ -8,7 +8,7 @@ import (
 
 type Dictionary map[string]map[string]uint64
 
-func readDictionary(r *bufio.Reader) Dictionary {
+func ReadDictionary(r *bufio.Reader) Dictionary {
 	dictionary := make(Dictionary)
 
 	l, e := ReadLn(r)
