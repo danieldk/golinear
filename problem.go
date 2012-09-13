@@ -81,8 +81,7 @@ func cNodes(nodes []FeatureValue) *C.feature_node_t {
 }
 
 func (problem *Problem) Add(trainInst TrainingInstance) error {
-	err := verifyFeatureIndices(trainInst.Features)
-	if err != nil {
+	if err := verifyFeatureIndices(trainInst.Features); err != nil {
 		return err
 	}
 

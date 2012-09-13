@@ -20,8 +20,7 @@ func TestSortedFeatureVector(t *testing.T) {
 func TestInvalidIndex(t *testing.T) {
 	p := NewProblem()
 	erronous := FeatureVector{{1, 1}, {2, 0.5}, {0, 1}}
-	err := p.Add(TrainingInstance{0, erronous})
-	if err == nil {
+	if err := p.Add(TrainingInstance{0, erronous}); err == nil {
 		t.Error("Erronous feature index should be rejected")
 	}
 }
