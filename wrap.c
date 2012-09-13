@@ -87,6 +87,16 @@ void free_and_destroy_model_wrap(model_t *model)
   free_and_destroy_model(&model);
 }
 
+model_t *load_model_wrap(char const *filename)
+{
+  return load_model(filename);
+}
+
+int save_model_wrap(model_t const *model, char const *filename)
+{
+  return save_model(filename, model);
+}
+
 model_t *train_wrap(problem_t *prob, parameter_t *param)
 {
   return train(prob, param);

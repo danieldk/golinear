@@ -42,11 +42,40 @@ func TrainModel(param Parameters, problem *Problem) (*Model, error) {
 	return model, nil
 }
 
+// Load a previously saved model.
+func LoadModel(filename string) (*Model, error) {
+	cFilename := C.CString(filename)
+	defer C.free(unsafe.Pointer(cFilename))
+
+	model := &Model{C.load_model_wrap(cFilename), nil}
+
+	if model.model == nil {
+		return nil, errors.New("Cannot read model: " + filename)
+	}
+
+	runtime.SetFinalizer(model, finalizeModel)
+
+	return model, nil
+}
+
 // Predict the label of an instance using the given model.
 func (model *Model) Predict(nodes []FeatureValue) float64 {
 	cn := cNodes(nodes)
 	defer C.nodes_free(cn)
 	return float64(C.predict_wrap(model.model, cn))
+}
+
+// Save the model to a file.
+func (model *Model) Save(filename string) error {
+	cFilename := C.CString(filename)
+	defer C.free(unsafe.Pointer(cFilename))
+	result := C.save_model_wrap(model.model, cFilename)
+
+	if result == -1 {
+		return errors.New("Could not save model to file: " + filename)
+	}
+
+	return nil
 }
 
 func finalizeModel(model *Model) {
