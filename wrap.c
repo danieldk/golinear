@@ -72,6 +72,13 @@ parameter_t *parameter_new()
   return param;
 }
 
+double *double_new(size_t n)
+{
+  double *r = malloc(n * sizeof(double));
+  memset(r, 0, n * sizeof(double));
+  return r;
+}
+
 int *labels_new(int n)
 {
   int *labels = malloc(n * sizeof(int));
@@ -101,6 +108,13 @@ char const *check_parameter_wrap(problem_t *prob, parameter_t *param)
 {
   return check_parameter(prob, param);
 }
+
+void cross_validation_wrap(problem_t const *prob, parameter_t const *param,
+  int nr_fold, double *target)
+{
+  return cross_validation(prob, param, nr_fold, target);
+}
+
 
 void destroy_param_wrap(parameter_t* param)
 {

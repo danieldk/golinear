@@ -23,12 +23,15 @@ parameter_t *parameter_new();
 
 int *labels_new(int n);
 double *probs_new(model_t *model);
+double *double_new(size_t n);
 
 double get_double_idx(double *arr, int idx);
 int get_int_idx(int *arr, int idx);
 
 char const *check_parameter_wrap(problem_t *prob,
     parameter_t *param);
+void cross_validation_wrap(problem_t const *prob, parameter_t const *param,
+	int nr_fold, double *target);
 void destroy_param_wrap(parameter_t* param);
 void get_labels_wrap(model_t const *model, int *label);
 int get_nr_class_wrap(model_t const *model);
