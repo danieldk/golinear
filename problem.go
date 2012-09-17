@@ -100,6 +100,7 @@ func (problem *Problem) Add(trainInst TrainingInstance) error {
 
 type ProblemIterFunc func(instance *TrainingInstance)
 
+// Iterate over the training instances in a problem.
 func (problem *Problem) Iterate(fun ProblemIterFunc) {
 	for i := 0; i < int(problem.problem.l); i++ {
 		label := float64(C.get_double_idx(problem.problem.y, C.int(i)))
