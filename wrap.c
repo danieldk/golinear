@@ -72,6 +72,31 @@ parameter_t *parameter_new()
   return param;
 }
 
+int *labels_new(int n)
+{
+  int *labels = malloc(n * sizeof(int));
+  memset(labels, 0, n * sizeof(int));
+  return labels;
+}
+
+double *probs_new(model_t *model)
+{
+  int nClasses = get_nr_class(model);
+  double *probs = malloc(nClasses * sizeof(double));
+  memset(probs, 0, nClasses * sizeof(double));
+  return probs;
+}
+
+double get_double_idx(double *arr, int idx)
+{
+  return arr[idx];
+}
+
+int get_int_idx(int *arr, int idx)
+{
+  return arr[idx];
+}
+
 char const *check_parameter_wrap(problem_t *prob, parameter_t *param)
 {
   return check_parameter(prob, param);
@@ -87,9 +112,25 @@ void free_and_destroy_model_wrap(model_t *model)
   free_and_destroy_model(&model);
 }
 
+void get_labels_wrap(model_t const *model, int *label)
+{
+  get_labels(model, label);
+}
+
+int get_nr_class_wrap(model_t const *model)
+{
+  return get_nr_class(model);
+}
+
 model_t *load_model_wrap(char const *filename)
 {
   return load_model(filename);
+}
+
+double predict_probability_wrap(model_t const *model, 
+    feature_node_t const *x, double *prob_estimates)
+{
+  return predict_probability(model, x, prob_estimates);
 }
 
 int save_model_wrap(model_t const *model, char const *filename)
