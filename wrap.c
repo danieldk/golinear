@@ -28,6 +28,16 @@ void nodes_put(feature_node_t *nodes, size_t nodes_idx, int idx,
   nodes[nodes_idx].value = value;
 }
 
+feature_node_t nodes_get(feature_node_t *nodes, size_t idx)
+{
+  return nodes[idx];
+}
+
+feature_node_t *nodes_vector_get(problem_t *problem, size_t idx)
+{
+  return problem->x[idx];
+}
+
 problem_t *problem_new()
 {
   problem_t *problem = malloc(sizeof(problem_t));

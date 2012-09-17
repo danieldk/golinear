@@ -98,6 +98,24 @@ func (problem *Problem) Add(trainInst TrainingInstance) error {
 	return nil
 }
 
+type ProblemIterFunc func(instance *TrainingInstance)
+
+func (problem *Problem) Iterate(fun ProblemIterFunc) {
+	for i := 0; i < int(problem.problem.l); i++ {
+		label := float64(C.get_double_idx(problem.problem.y, C.int(i)))
+		cNodes := C.nodes_vector_get(problem.problem, C.size_t(i))
+
+		fVals := make(FeatureVector, 0)
+		var j C.size_t
+		for j = 0; C.nodes_get(cNodes, j).index != -1; j++ {
+			cNode := C.nodes_get(cNodes, j)
+			fVals = append(fVals, FeatureValue{int(cNode.index), float64(cNode.value)})
+		}
+
+		fun(&TrainingInstance{label, fVals})
+	}
+}
+
 // Helper functions
 
 func sortedFeatureVector(fv FeatureVector) FeatureVector {

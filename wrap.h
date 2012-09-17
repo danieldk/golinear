@@ -13,6 +13,9 @@ feature_node_t *nodes_new(size_t n);
 void nodes_free(feature_node_t *nodes);
 void nodes_put(feature_node_t *nodes, size_t node_idx, int idx,
   double value);
+feature_node_t nodes_get(feature_node_t *nodes, size_t idx);
+
+feature_node_t *nodes_vector_get(problem_t *problem, size_t idx);
 
 problem_t *problem_new();
 void problem_free(problem_t *problem);
@@ -22,6 +25,7 @@ void problem_add_train_inst(problem_t *problem, feature_node_t *nodes,
 parameter_t *parameter_new();
 
 int *labels_new(int n);
+
 double *probs_new(model_t *model);
 double *double_new(size_t n);
 

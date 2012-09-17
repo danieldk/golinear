@@ -25,6 +25,24 @@ func TestInvalidIndex(t *testing.T) {
 	}
 }
 
+func TestProblemIterate(t *testing.T) {
+	problem := simpleProblem(t)
+	instances := simpleInstances()
+
+	idx := 0
+	problem.Iterate(func(instance *TrainingInstance) {
+		check := instances[idx]
+
+		compareVectors(t, instance.Features, check.Features, "iterated")
+
+		if instance.Label != check.Label {
+			t.Errorf("label(iterated) = %f, want %f", instance.Label, check.Label)
+		}
+
+		idx++
+	})
+}
+
 func compareVectors(t *testing.T, candidate, check FeatureVector, candidateName string) {
 	// Sanity check
 	if len(candidate) != len(check) {
