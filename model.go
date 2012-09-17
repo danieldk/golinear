@@ -83,8 +83,9 @@ func (model *Model) Predict(nodes []FeatureValue) float64 {
 
 // Predict the label of an instance, given a model with probability
 // information. This method returns the label of the predicted class,
-// a map of class probabilities, and an error if the model was not
-// trained without the required information to do probability estimates.
+// a map of class probabilities. Probability estimates are currently
+// given for logistic regression only. If another solver is used,
+// the probability of each class is zero.
 func (model *Model) PredictProbability(nodes []FeatureValue) (float64, map[int]float64, error) {
 	// Allocate sparse C feature vector.
 	cn := cNodes(nodes)
