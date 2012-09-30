@@ -55,6 +55,30 @@ func NewMCSVMCSDefault(epsilon float64) SolverType {
 	return NewMCSVMCS(0.1)
 }
 
+func NewL1RL2LossSvc(epsilon float64) SolverType {
+	return SolverType{C.L1R_L2LOSS_SVC, C.double(epsilon)}
+}
+
+func NewL1RL2LossSvcDefault() SolverType {
+	return NewL1RL2LossSvc(0.01)
+}
+
+func NewL1RLogisticRegression(epsilon float64) SolverType {
+	return SolverType{C.L1R_LR, C.double(epsilon)}
+}
+
+func NewL1RLogisticRegressionDefault() SolverType {
+	return NewL1RLogisticRegression(0.01)
+}
+
+func NewL2RLogisticRegressionDual(epsilon float64) SolverType {
+	return SolverType{C.L2R_LR_DUAL, C.double(epsilon)}
+}
+
+func NewL2RLogisticRegressionDualDefault() SolverType {
+	return NewL2RLogisticRegressionDual(0.7)
+}
+
 func DefaultParameters() Parameters {
 	return Parameters{NewL2RL2LossSvcDualDefault(), 1}
 }
