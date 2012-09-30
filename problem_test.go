@@ -30,7 +30,7 @@ func TestProblemIterate(t *testing.T) {
 	instances := simpleInstances()
 
 	idx := 0
-	problem.Iterate(func(instance *TrainingInstance) {
+	problem.Iterate(func(instance *TrainingInstance) bool {
 		check := instances[idx]
 
 		compareVectors(t, instance.Features, check.Features, "iterated")
@@ -40,7 +40,20 @@ func TestProblemIterate(t *testing.T) {
 		}
 
 		idx++
+
+		return true
 	})
+
+	// Iteration should be cancelled if the function passed returns 'false'.
+	count := 0
+	problem.Iterate(func(*TrainingInstance) bool {
+		count++
+		return false
+	})
+
+	if count != 1 {
+		t.Error("Problem iteration does not cancel upon the closure's request")
+	}
 }
 
 func compareVectors(t *testing.T, candidate, check FeatureVector, candidateName string) {

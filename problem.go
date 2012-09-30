@@ -98,7 +98,7 @@ func (problem *Problem) Add(trainInst TrainingInstance) error {
 	return nil
 }
 
-type ProblemIterFunc func(instance *TrainingInstance)
+type ProblemIterFunc func(instance *TrainingInstance) bool
 
 // Iterate over the training instances in a problem.
 func (problem *Problem) Iterate(fun ProblemIterFunc) {
@@ -113,7 +113,9 @@ func (problem *Problem) Iterate(fun ProblemIterFunc) {
 			fVals = append(fVals, FeatureValue{int(cNode.index), float64(cNode.value)})
 		}
 
-		fun(&TrainingInstance{label, fVals})
+		if !fun(&TrainingInstance{label, fVals}) {
+			break
+		}
 	}
 }
 
