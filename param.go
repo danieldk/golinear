@@ -5,9 +5,13 @@ package golinear
 */
 import "C"
 
+// Parameters for training a linear model.
 type Parameters struct {
+	// The type of solver
 	SolverType SolverType
-	Cost       C.double
+
+	// The cost of constraints violation.
+	Cost C.double
 }
 
 type SolverType struct {
@@ -15,68 +19,114 @@ type SolverType struct {
 	epsilon    C.double
 }
 
+// L2-regularized logistic regression (primal).
 func NewL2RLogisticRegression(epsilon float64) SolverType {
 	return SolverType{C.L2R_LR, C.double(epsilon)}
 }
 
+// L2-regularized logistic regression (primal), epsilon = 0.01.
 func NewL2RLogisticRegressionDefault() SolverType {
 	return NewL2RLogisticRegression(0.01)
 }
 
+// L2-regularized L2-loss support vector classification (dual).
 func NewL2RL2LossSvcDual(epsilon float64) SolverType {
 	return SolverType{C.L2R_L2LOSS_SVC_DUAL, C.double(epsilon)}
 }
 
+// L2-regularized L2-loss support vector classification (dual), epsilon = 0.1.
 func NewL2RL2LossSvcDualDefault() SolverType {
 	return NewL2RL2LossSvcDual(0.1)
 }
 
+// L2-regularized L2-loss support vector classification (primal).
 func NewL2RL2LossSvcPrimal(epsilon float64) SolverType {
 	return SolverType{C.L2R_L2LOSS_SVC, C.double(epsilon)}
 }
 
+// L2-regularized L2-loss support vector classification (primal), epsilon = 0.01.
 func NewL2RL2LossSvcPrimalDefault() SolverType {
 	return NewL2RL2LossSvcPrimal(0.01)
 }
 
+// L2-regularized L1-loss support vector classification (dual).
 func NewL2RL1LossSvcDual(epsilon float64) SolverType {
 	return SolverType{C.L2R_L1LOSS_SVC_DUAL, C.double(epsilon)}
 }
 
+// L2-regularized L1-loss support vector classification (dual), epsilon = 0.1.
 func NewL2RL1LossSvcDualDefault() SolverType {
 	return NewL2RL1LossSvcDual(0.1)
 }
 
+// Support vector classification by Crammer and Singer.
 func NewMCSVMCS(epsilon float64) SolverType {
 	return SolverType{C.MCSVM_CS, C.double(epsilon)}
 }
 
+// Support vector classification by Crammer and Singer, epsilon = 0.1.
 func NewMCSVMCSDefault(epsilon float64) SolverType {
 	return NewMCSVMCS(0.1)
 }
 
+// L1-regularized L2-loss support vector classification.
 func NewL1RL2LossSvc(epsilon float64) SolverType {
 	return SolverType{C.L1R_L2LOSS_SVC, C.double(epsilon)}
 }
 
+// L1-regularized L2-loss support vector classification, epsilon = 0.01.
 func NewL1RL2LossSvcDefault() SolverType {
 	return NewL1RL2LossSvc(0.01)
 }
 
+// L1-regularized logistic regression.
 func NewL1RLogisticRegression(epsilon float64) SolverType {
 	return SolverType{C.L1R_LR, C.double(epsilon)}
 }
 
+// L1-regularized logistic regression, epsilon = 0.01.
 func NewL1RLogisticRegressionDefault() SolverType {
 	return NewL1RLogisticRegression(0.01)
 }
 
+// L2-regularized logistic regression (dual) for regression.
 func NewL2RLogisticRegressionDual(epsilon float64) SolverType {
 	return SolverType{C.L2R_LR_DUAL, C.double(epsilon)}
 }
 
+// L2-regularized logistic regression (dual) for regression, epsilon = 0.1.
 func NewL2RLogisticRegressionDualDefault() SolverType {
-	return NewL2RLogisticRegressionDual(0.7)
+	return NewL2RLogisticRegressionDual(0.1)
+}
+
+// L2-regularized L2-loss support vector regression (primal).
+func NewL2RL2LossSvRegression(epsilon float64) SolverType {
+	return SolverType{C.L2R_L2LOSS_SVR, C.double(epsilon)}
+}
+
+// L2-regularized L2-loss support vector regression (primal), epsilon = 0.001.
+func NewL2RL2LossSvRegressionDefault(epsilon float64) SolverType {
+	return NewL2RL2LossSvRegression(0.001)
+}
+
+// L2-regularized L2-loss support vector regression (dual).
+func NewL2RL2LossSvRegressionDual(epsilon float64) SolverType {
+	return SolverType{C.L2R_L2LOSS_SVR_DUAL, C.double(epsilon)}
+}
+
+// L2-regularized L2-loss support vector regression (dual), epsilon = 0.1.
+func NewL2RL2LossSvRegressionDualDefault(epsilon float64) SolverType {
+	return NewL2RL2LossSvRegressionDual(0.1)
+}
+
+// L2-regularized L1-loss support vector regression (dual).
+func NewL2RL1LossSvRegressionDual(epsilon float64) SolverType {
+	return SolverType{C.L2R_L1LOSS_SVR_DUAL, C.double(epsilon)}
+}
+
+// L2-regularized L1-loss support vector regression (dual), epsilon = 0.1.
+func NewL2RL1LossSvRegressionDualDefault(epsilon float64) SolverType {
+	return NewL2RL1LossSvRegressionDual(0.1)
 }
 
 func DefaultParameters() Parameters {
