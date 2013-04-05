@@ -26,6 +26,16 @@ This package can be installed with the <tt>go</tt> command:
 
 The package documentation is available at: http://go.pkgdoc.org/github.com/danieldk/golinear
 
+## Plans
+
+1. Stabilize the API.
+2. Port classification to Go.
+3. Port training to Go.
+
+We will take a pragmatic approach to porting code to Go: if the performance penalty is minor,
+ported code will flow to the main branch. Otherwise, we will keep it around until the performance
+is good enough.
+
 ## Examples
 
 Examples for using golinear can be found at:
