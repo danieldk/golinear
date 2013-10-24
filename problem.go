@@ -1,7 +1,7 @@
 package golinear
 
 /*
-#cgo LDFLAGS: -llinear
+#cgo LDFLAGS: -llinear -lblas -lstdc++ -lm
 #include <stddef.h>
 #include "wrap.h"
 */
