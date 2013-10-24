@@ -104,6 +104,14 @@ func (problem *Problem) Add(trainInst TrainingInstance) error {
 	return nil
 }
 
+func (problem *Problem) Bias() float64 {
+	return float64(C.problem_bias(problem.problem))
+}
+
+func (problem *Problem) SetBias(bias float64) {
+	C.set_problem_bias(problem.problem, C.double(bias))
+}
+
 // Function prototype for iteration over problems. The function should return
 // 'true' if the iteration should continue or 'false' otherwise.
 type ProblemIterFunc func(instance *TrainingInstance) bool

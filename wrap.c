@@ -90,6 +90,16 @@ void problem_add_train_inst(problem_t *problem, feature_node_t *nodes,
   problem->x[problem->l - 1] = nodes;
 }
 
+double problem_bias(problem_t *problem)
+{
+  return problem->bias;
+}
+
+void set_problem_bias(problem_t *problem, double bias)
+{
+  problem->bias = bias;
+}
+
 parameter_t *parameter_new()
 {
   parameter_t *param = malloc(sizeof(parameter_t));
