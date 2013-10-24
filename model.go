@@ -25,6 +25,7 @@ type Model struct {
 func TrainModel(param Parameters, problem *Problem) (*Model, error) {
 	cParam := toCParameter(param)
 	defer func() {
+		C.parameter_free(cParam)
 		C.destroy_param_wrap(cParam)
 		C.free(unsafe.Pointer(cParam))
 	}()

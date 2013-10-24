@@ -147,13 +147,16 @@ func toCParameter(param Parameters) *C.parameter_t {
 	cParam.eps = param.SolverType.epsilon
 	cParam.C = param.Cost
 
+	// Copy relative costs into C structure.
 	n := len(param.RelCosts)
-	cParam.nr_weight = C.int(n)
-	cParam.weight_label = newLabels(C.int(n))
-	cParam.weight = newDouble(C.size_t(n))
-	for i, weight := range param.RelCosts {
-		C.set_int_idx(cParam.weight_label, C.int(i), C.int(weight.Label))
-		C.set_double_idx(cParam.weight, C.int(i), C.double(weight.Value))
+	if n > 0 {
+		cParam.nr_weight = C.int(n)
+		cParam.weight_label = newLabels(C.int(n))
+		cParam.weight = newDouble(C.size_t(n))
+		for i, weight := range param.RelCosts {
+			C.set_int_idx(cParam.weight_label, C.int(i), C.int(weight.Label))
+			C.set_double_idx(cParam.weight, C.int(i), C.double(weight.Value))
+		}
 	}
 
 	return cParam

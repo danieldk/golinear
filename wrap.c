@@ -100,6 +100,18 @@ parameter_t *parameter_new()
   return param;
 }
 
+void parameter_free(parameter_t *param)
+{
+  if (param->weight_label != NULL) {
+    free(param->weight_label);
+    param->weight_label = NULL;
+  }
+  if (param->weight != NULL) {
+    free(param->weight);
+    param->weight = NULL;
+  }
+}
+
 double *double_new(size_t n)
 {
   double *r = malloc(n * sizeof(double));

@@ -23,6 +23,7 @@ void problem_add_train_inst(problem_t *problem, feature_node_t *nodes,
   double label);
 
 parameter_t *parameter_new();
+void parameter_free(parameter_t *param);
 
 int *labels_new(int n);
 
