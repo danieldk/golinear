@@ -99,7 +99,7 @@ func (problem *Problem) Add(trainInst TrainingInstance) error {
 }
 
 // Function prototype for iteration over problems. The function should return
-// 'true' if the iteration should continue or 'false' otherwise. 
+// 'true' if the iteration should continue or 'false' otherwise.
 type ProblemIterFunc func(instance *TrainingInstance) bool
 
 // Iterate over the training instances in a problem.
