@@ -12,6 +12,13 @@ type Parameters struct {
 
 	// The cost of constraints violation.
 	Cost C.double
+	// The relative penalty for each class.
+	RelCosts []ClassWeight
+}
+
+type ClassWeight struct {
+	Label int
+	Value float64
 }
 
 type SolverType struct {
@@ -130,15 +137,27 @@ func NewL2RL1LossSvRegressionDualDefault(epsilon float64) SolverType {
 }
 
 func DefaultParameters() Parameters {
-	return Parameters{NewL2RL2LossSvcDualDefault(), 1}
+	return Parameters{NewL2RL2LossSvcDualDefault(), 1, nil}
 }
 
 func toCParameter(param Parameters) *C.parameter_t {
-	cParam := C.parameter_new()
+	cParam := newParameter()
 
 	cParam.solver_type = param.SolverType.solverType
 	cParam.eps = param.SolverType.epsilon
 	cParam.C = param.Cost
+
+	// Copy relative costs into C structure.
+	n := len(param.RelCosts)
+	if n > 0 {
+		cParam.nr_weight = C.int(n)
+		cParam.weight_label = newLabels(C.int(n))
+		cParam.weight = newDouble(C.size_t(n))
+		for i, weight := range param.RelCosts {
+			C.set_int_idx(cParam.weight_label, C.int(i), C.int(weight.Label))
+			C.set_double_idx(cParam.weight, C.int(i), C.double(weight.Value))
+		}
+	}
 
 	return cParam
 }

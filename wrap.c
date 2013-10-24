@@ -8,6 +8,9 @@
 feature_node_t *nodes_new(size_t n)
 {
   feature_node_t *nodes = malloc((n + 1) * sizeof(feature_node_t));
+  if (nodes == NULL) {
+    return NULL;
+  }
 
   // Terminator
   nodes[n].index = -1;
@@ -41,12 +44,24 @@ feature_node_t *nodes_vector_get(problem_t *problem, size_t idx)
 problem_t *problem_new()
 {
   problem_t *problem = malloc(sizeof(problem_t));
+  if (problem == NULL) {
+    return NULL;
+  }
 
   problem->l = 0;
   problem->n = 0;
   problem->bias = -1;
   problem->y = malloc(0);
+  if (problem->y == NULL) {
+    free(problem);
+    return NULL;
+  }
   problem->x = malloc(0);
+  if (problem->x == NULL) {
+    free(problem->y);
+    free(problem);
+    return NULL;
+  }
 
   return problem;
 }
@@ -75,16 +90,44 @@ void problem_add_train_inst(problem_t *problem, feature_node_t *nodes,
   problem->x[problem->l - 1] = nodes;
 }
 
+double problem_bias(problem_t *problem)
+{
+  return problem->bias;
+}
+
+void set_problem_bias(problem_t *problem, double bias)
+{
+  problem->bias = bias;
+}
+
 parameter_t *parameter_new()
 {
   parameter_t *param = malloc(sizeof(parameter_t));
+  if (param == NULL) {
+    return NULL;
+  }
   memset(param, 0, sizeof(parameter_t));
   return param;
+}
+
+void parameter_free(parameter_t *param)
+{
+  if (param->weight_label != NULL) {
+    free(param->weight_label);
+    param->weight_label = NULL;
+  }
+  if (param->weight != NULL) {
+    free(param->weight);
+    param->weight = NULL;
+  }
 }
 
 double *double_new(size_t n)
 {
   double *r = malloc(n * sizeof(double));
+  if (r == NULL) {
+    return NULL;
+  }
   memset(r, 0, n * sizeof(double));
   return r;
 }
@@ -92,6 +135,9 @@ double *double_new(size_t n)
 int *labels_new(int n)
 {
   int *labels = malloc(n * sizeof(int));
+  if (labels == NULL) {
+    return NULL;
+  }
   memset(labels, 0, n * sizeof(int));
   return labels;
 }
@@ -100,6 +146,9 @@ double *probs_new(model_t *model)
 {
   int nClasses = get_nr_class(model);
   double *probs = malloc(nClasses * sizeof(double));
+  if (probs == NULL) {
+      return NULL;
+  }
   memset(probs, 0, nClasses * sizeof(double));
   return probs;
 }
@@ -112,6 +161,16 @@ double get_double_idx(double *arr, int idx)
 int get_int_idx(int *arr, int idx)
 {
   return arr[idx];
+}
+
+void set_double_idx(double *arr, int idx, double val)
+{
+  arr[idx] = val;
+}
+
+void set_int_idx(int *arr, int idx, int val)
+{
+  arr[idx] = val;
 }
 
 char const *check_parameter_wrap(problem_t *prob, parameter_t *param)

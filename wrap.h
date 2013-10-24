@@ -22,7 +22,11 @@ void problem_free(problem_t *problem);
 void problem_add_train_inst(problem_t *problem, feature_node_t *nodes,
   double label);
 
+double problem_bias(problem_t *problem);
+void set_problem_bias(problem_t *problem, double bias);
+
 parameter_t *parameter_new();
+void parameter_free(parameter_t *param);
 
 int *labels_new(int n);
 
@@ -31,6 +35,9 @@ double *double_new(size_t n);
 
 double get_double_idx(double *arr, int idx);
 int get_int_idx(int *arr, int idx);
+
+void set_double_idx(double *arr, int idx, double val);
+void set_int_idx(int *arr, int idx, int val);
 
 char const *check_parameter_wrap(problem_t *prob,
     parameter_t *param);

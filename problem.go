@@ -1,7 +1,7 @@
 package golinear
 
 /*
-#cgo LDFLAGS: -llinear
+#cgo LDFLAGS: -llinear -lblas -lstdc++ -lm
 #include <stddef.h>
 #include "wrap.h"
 */
@@ -40,17 +40,22 @@ type TrainingInstance struct {
 // A problem is a set of instances and corresponding labels.
 type Problem struct {
 	problem *C.problem_t
+	insts   []*C.feature_node_t
 }
 
 func NewProblem() *Problem {
-	cProblem := C.problem_new()
-	problem := &Problem{cProblem}
-
-	runtime.SetFinalizer(problem, func(p *Problem) {
-		C.problem_free(p.problem)
-	})
-
+	cProblem := newProblem()
+	problem := &Problem{cProblem, nil}
+	runtime.SetFinalizer(problem, finalizeProblem)
 	return problem
+}
+
+func finalizeProblem(p *Problem) {
+	for _, nodes := range p.insts {
+		C.nodes_free(nodes)
+	}
+	p.insts = nil
+	C.problem_free(p.problem)
 }
 
 // Convert a dense feature vector, represented as a slice of feature
@@ -71,7 +76,7 @@ func FromDenseVector(denseVector []float64) FeatureVector {
 }
 
 func cNodes(nodes []FeatureValue) *C.feature_node_t {
-	n := C.nodes_new(C.size_t(len(nodes)))
+	n := newNodes(C.size_t(len(nodes)))
 
 	for idx, val := range nodes {
 		C.nodes_put(n, C.size_t(idx), C.int(val.Index), C.double(val.Value))
@@ -87,7 +92,8 @@ func (problem *Problem) Add(trainInst TrainingInstance) error {
 
 	features := sortedFeatureVector(trainInst.Features)
 
-	nodes := C.nodes_new(C.size_t(len(features)))
+	nodes := newNodes(C.size_t(len(features)))
+	problem.insts = append(problem.insts, nodes)
 
 	for idx, val := range features {
 		C.nodes_put(nodes, C.size_t(idx), C.int(val.Index), C.double(val.Value))
@@ -98,8 +104,16 @@ func (problem *Problem) Add(trainInst TrainingInstance) error {
 	return nil
 }
 
+func (problem *Problem) Bias() float64 {
+	return float64(C.problem_bias(problem.problem))
+}
+
+func (problem *Problem) SetBias(bias float64) {
+	C.set_problem_bias(problem.problem, C.double(bias))
+}
+
 // Function prototype for iteration over problems. The function should return
-// 'true' if the iteration should continue or 'false' otherwise. 
+// 'true' if the iteration should continue or 'false' otherwise.
 type ProblemIterFunc func(instance *TrainingInstance) bool
 
 // Iterate over the training instances in a problem.

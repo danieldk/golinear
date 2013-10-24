@@ -9,6 +9,7 @@ import "C"
 
 import (
 	"errors"
+	"fmt"
 	"runtime"
 	"unsafe"
 )
@@ -21,10 +22,41 @@ type Model struct {
 	problem *Problem
 }
 
+// Extracts the weight vector of a two-class problem.
+func (model *Model) Weights() []float64 {
+	if model.model.nr_class != 2 {
+		panic(fmt.Sprint("not exactly two classes: ", model.model.nr_class))
+	}
+	n := model.model.nr_feature
+	weights := make([]float64, n)
+	for i := range weights {
+		weights[i] = float64(C.get_double_idx(model.model.w, C.int(i)))
+	}
+	return weights
+}
+
+// Extracts the bias of a two-class problem.
+func (model *Model) Bias() float64 {
+	if model.model.nr_class != 2 {
+		panic(fmt.Sprint("not exactly two classes: ", model.model.nr_class))
+	}
+	// model.nr_feature does not include bias.
+	n := model.model.nr_feature
+	return float64(C.get_double_idx(model.model.w, n))
+}
+
+// Extracts the weight vectors of a multi-class problem.
+//
+// NOT IMPLEMENTED.
+func (model *Model) WeightsMulti() [][]float64 {
+	panic("not implemented")
+}
+
 // Train an SVM using the given parameters and problem.
 func TrainModel(param Parameters, problem *Problem) (*Model, error) {
 	cParam := toCParameter(param)
 	defer func() {
+		C.parameter_free(cParam)
 		C.destroy_param_wrap(cParam)
 		C.free(unsafe.Pointer(cParam))
 	}()
@@ -61,7 +93,7 @@ func LoadModel(filename string) (*Model, error) {
 // Get a slice with class labels
 func (model *Model) labels() []int {
 	nClasses := C.get_nr_class_wrap(model.model)
-	cLabels := C.labels_new(nClasses)
+	cLabels := newLabels(nClasses)
 	defer C.free(unsafe.Pointer(cLabels))
 	C.get_labels_wrap(model.model, cLabels)
 
@@ -92,7 +124,7 @@ func (model *Model) PredictProbability(nodes []FeatureValue) (float64, map[int]f
 	defer C.nodes_free(cn)
 
 	// Allocate C array for probabilities.
-	cProbs := C.probs_new(model.model)
+	cProbs := newProbs(model.model)
 	defer C.free(unsafe.Pointer(cProbs))
 
 	r := C.predict_probability_wrap(model.model, cn, cProbs)
