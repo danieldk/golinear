@@ -61,7 +61,7 @@ func LoadModel(filename string) (*Model, error) {
 // Get a slice with class labels
 func (model *Model) labels() []int {
 	nClasses := C.get_nr_class_wrap(model.model)
-	cLabels := C.labels_new(nClasses)
+	cLabels := newLabels(nClasses)
 	defer C.free(unsafe.Pointer(cLabels))
 	C.get_labels_wrap(model.model, cLabels)
 
@@ -92,7 +92,7 @@ func (model *Model) PredictProbability(nodes []FeatureValue) (float64, map[int]f
 	defer C.nodes_free(cn)
 
 	// Allocate C array for probabilities.
-	cProbs := C.probs_new(model.model)
+	cProbs := newProbs(model.model)
 	defer C.free(unsafe.Pointer(cProbs))
 
 	r := C.predict_probability_wrap(model.model, cn, cProbs)

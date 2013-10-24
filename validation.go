@@ -30,7 +30,7 @@ func CrossValidation(problem *Problem, param Parameters, nFolds uint) ([]float64
 	}
 
 	nInstances := uint(problem.problem.l)
-	target := C.double_new(C.size_t(nInstances))
+	target := newDouble(C.size_t(nInstances))
 	defer C.free(unsafe.Pointer(target))
 
 	C.cross_validation_wrap(problem.problem, cParam, C.int(nFolds), target)
