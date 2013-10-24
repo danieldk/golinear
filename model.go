@@ -9,6 +9,7 @@ import "C"
 
 import (
 	"errors"
+	"fmt"
 	"runtime"
 	"unsafe"
 )
@@ -19,6 +20,36 @@ type Model struct {
 	model *C.model_t
 	// Keep a pointer to the problem, since C model depends on it.
 	problem *Problem
+}
+
+// Extracts the weight vector of a two-class problem.
+func (model *Model) Weights() []float64 {
+	if model.model.nr_class != 2 {
+		panic(fmt.Sprint("not exactly two classes: ", model.model.nr_class))
+	}
+	n := model.model.nr_feature
+	weights := make([]float64, n)
+	for i := range weights {
+		weights[i] = float64(C.get_double_idx(model.model.w, C.int(i)))
+	}
+	return weights
+}
+
+// Extracts the bias of a two-class problem.
+func (model *Model) Bias() float64 {
+	if model.model.nr_class != 2 {
+		panic(fmt.Sprint("not exactly two classes: ", model.model.nr_class))
+	}
+	// model.nr_feature does not include bias.
+	n := model.model.nr_feature
+	return float64(C.get_double_idx(model.model.w, n))
+}
+
+// Extracts the weight vectors of a multi-class problem.
+//
+// NOT IMPLEMENTED.
+func (model *Model) WeightsMulti() [][]float64 {
+	panic("not implemented")
 }
 
 // Train an SVM using the given parameters and problem.
