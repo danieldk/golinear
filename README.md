@@ -15,10 +15,9 @@ OS X, you can install this library with
 
     brew install liblinear
 
-Ubuntu and Debian provide packages for *liblinear* that can be installed
-with APT:
-
-    apt-get install liblinear-dev
+Ubuntu and Debian provide packages for *liblinear*. However, at the time of
+writing (July 2, 2014), these were serverly outdated. This package requires
+version 1.9.
 
 This package can be installed with the <tt>go</tt> command:
 
