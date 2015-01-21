@@ -23,7 +23,7 @@ This package can be installed with the <tt>go</tt> command:
 
     go get github.com/danieldk/golinear
 
-The package documentation is available at: http://go.pkgdoc.org/github.com/danieldk/golinear
+The package documentation is available at: http://godoc.org/github.com/danieldk/golinear
 
 ## Plans
 
