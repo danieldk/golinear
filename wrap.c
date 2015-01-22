@@ -216,6 +216,12 @@ double predict_probability_wrap(model_t const *model,
   return predict_probability(model, x, prob_estimates);
 }
 
+double predict_values_wrap(model_t const *model,
+    feature_node_t const *x, double *dec_values)
+{
+  return predict_values(model, x, dec_values);
+}
+
 int save_model_wrap(model_t const *model, char const *filename)
 {
   return save_model(filename, model);

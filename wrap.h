@@ -50,6 +50,8 @@ model_t *load_model_wrap(char const *filename);
 double predict_wrap(model_t const *model, feature_node_t *nodes);
 double predict_probability_wrap(model_t const *model,
 	feature_node_t const *x, double *prob_estimates);
+double predict_values_wrap(model_t const *model,
+    feature_node_t const *x, double *dec_values);
 int save_model_wrap(model_t const *model, char const *filename);
 model_t *train_wrap(problem_t *prob, parameter_t *param);
 void free_and_destroy_model_wrap(model_t *model);

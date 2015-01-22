@@ -139,6 +139,29 @@ func (model *Model) PredictProbability(nodes []FeatureValue) (float64, map[int]f
 	return float64(r), probs, nil
 }
 
+// Predict the label of an instance. In contrast to Predict, it also
+// returns the per-label decision values.
+func (model *Model) PredictDecisionValues(nodes []FeatureValue) (float64, map[int]float64, error) {
+	// Allocate sparse C feature vector.
+	cn := cNodes(nodes)
+	defer C.nodes_free(cn)
+
+	// Allocate C array for decision values.
+	cValues := newProbs(model.model)
+	defer C.free(unsafe.Pointer(cValues))
+
+	r := C.predict_values_wrap(model.model, cn, cValues)
+
+	// Store the decision values in a map
+	labels := model.labels()
+	values := make(map[int]float64)
+	for idx, label := range labels {
+		values[label] = float64(C.get_double_idx(cValues, C.int(idx)))
+	}
+
+	return float64(r), values, nil
+}
+
 // Save the model to a file.
 func (model *Model) Save(filename string) error {
 	cFilename := C.CString(filename)
