@@ -72,7 +72,7 @@ func NewMCSVMCS(epsilon float64) SolverType {
 }
 
 // Support vector classification by Crammer and Singer, epsilon = 0.1.
-func NewMCSVMCSDefault(epsilon float64) SolverType {
+func NewMCSVMCSDefault() SolverType {
 	return NewMCSVMCS(0.1)
 }
 
