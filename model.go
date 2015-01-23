@@ -20,6 +20,9 @@ type Model struct {
 	model *C.model_t
 	// Keep a pointer to the problem, since C model depends on it.
 	problem *Problem
+	// Computing the labels for each classification gets a bit
+	// expensive, cache the labels when they are used.
+	labelCache []int
 }
 
 // Extracts the weight vector of a two-class problem.
@@ -69,7 +72,7 @@ func TrainModel(param Parameters, problem *Problem) (*Model, error) {
 	}
 
 	cmodel := C.train_wrap(problem.problem, cParam)
-	model := &Model{cmodel, problem}
+	model := &Model{cmodel, problem, nil}
 	runtime.SetFinalizer(model, finalizeModel)
 	return model, nil
 }
@@ -79,7 +82,7 @@ func LoadModel(filename string) (*Model, error) {
 	cFilename := C.CString(filename)
 	defer C.free(unsafe.Pointer(cFilename))
 
-	model := &Model{C.load_model_wrap(cFilename), nil}
+	model := &Model{C.load_model_wrap(cFilename), nil, nil}
 
 	if model.model == nil {
 		return nil, errors.New("Cannot read model: " + filename)
@@ -92,6 +95,12 @@ func LoadModel(filename string) (*Model, error) {
 
 // Get a slice with class labels
 func (model *Model) labels() []int {
+	if model.labelCache != nil {
+		labels := make([]int, len(model.labelCache))
+		copy(labels, model.labelCache)
+		return labels
+	}
+
 	nClasses := C.get_nr_class_wrap(model.model)
 	cLabels := newLabels(nClasses)
 	defer C.free(unsafe.Pointer(cLabels))
@@ -103,6 +112,9 @@ func (model *Model) labels() []int {
 		labels[idx] = int(C.get_int_idx(cLabels, C.int(idx)))
 	}
 
+	model.labelCache = make([]int, len(labels))
+	copy(model.labelCache, labels)
+	
 	return labels
 }
 
