@@ -1,5 +1,7 @@
 ## Introduction
 
+[![GoDoc](https://godoc.org/github.com/danieldk/golinear?status.svg)](https://godoc.org/github.com/danieldk/golinear)
+
 golinear is a package for training and using linear classifiers in the Go
 programming language (golang).
 
