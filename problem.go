@@ -1,7 +1,8 @@
 package golinear
 
 /*
-#cgo LDFLAGS: -llinear -lblas -lstdc++ -lm
+#cgo CFLAGS: -Wall -Wconversion -O3 -fPIC
+#cgo LDFLAGS: -lstdc++ -lm
 #include <stddef.h>
 #include "wrap.h"
 */

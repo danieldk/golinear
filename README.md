@@ -10,16 +10,9 @@ of liblinear's functionality may be available yet.
 
 ## Installation
 
-To use this package, you need the
-[liblinear](http://www.csie.ntu.edu.tw/~cjlin/liblinear/) library. On Mac
-OS X, you can install this library with
-[Homebrew](http://mxcl.github.com/homebrew/):
-
-    brew install liblinear
-
-Ubuntu and Debian provide packages for *liblinear*. However, at the time of
-writing (July 2, 2014), these were serverly outdated. This package requires
-version 1.9.
+To use this package, you don't need the
+[liblinear](http://www.csie.ntu.edu.tw/~cjlin/liblinear/) library, since it
+is embedded. We currently use liblinear 1.96.
 
 This package can be installed with the <tt>go</tt> command:
 
