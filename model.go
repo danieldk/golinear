@@ -158,20 +158,20 @@ func (model *Model) PredictDecisionValues(nodes []FeatureValue) (float64, map[in
 	cn := cNodes(nodes)
 	defer C.nodes_free(cn)
 
-	// Allocate C array for decision values.
-	cValues := newProbs(model.model)
-	defer C.free(unsafe.Pointer(cValues))
+	labels := model.labels()
 
-	r := C.predict_values_wrap(model.model, cn, cValues)
+	// Allocate C array for decision values.
+	values := make([]float64, len(labels))
+
+	r := C.predict_values_wrap(model.model, cn, (*C.double)(unsafe.Pointer(&values[0])))
 
 	// Store the decision values in a map
-	labels := model.labels()
-	values := make(map[int]float64)
+	valuesMap := make(map[int]float64)
 	for idx, label := range labels {
-		values[label] = float64(C.get_double_idx(cValues, C.int(idx)))
+		valuesMap[label] = values[idx]
 	}
 
-	return float64(r), values, nil
+	return float64(r), valuesMap, nil
 }
 
 // Save the model to a file.
