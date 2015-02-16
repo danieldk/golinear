@@ -94,7 +94,7 @@ func LoadModel(filename string) (*Model, error) {
 }
 
 // Get a slice with class labels
-func (model *Model) labels() []int {
+func (model *Model) Labels() []int {
 	if model.labelCache != nil {
 		labels := make([]int, len(model.labelCache))
 		copy(labels, model.labelCache)
@@ -142,7 +142,7 @@ func (model *Model) PredictProbability(nodes []FeatureValue) (float64, map[int]f
 	r := C.predict_probability_wrap(model.model, cn, cProbs)
 
 	// Store the probabilities in a slice
-	labels := model.labels()
+	labels := model.Labels()
 	probs := make(map[int]float64)
 	for idx, label := range labels {
 		probs[label] = float64(C.get_double_idx(cProbs, C.int(idx)))
@@ -154,24 +154,39 @@ func (model *Model) PredictProbability(nodes []FeatureValue) (float64, map[int]f
 // Predict the label of an instance. In contrast to Predict, it also
 // returns the per-label decision values.
 func (model *Model) PredictDecisionValues(nodes []FeatureValue) (float64, map[int]float64, error) {
+	r, values, err := model.PredictDecisionValues(nodes)
+	if err != nil {
+		return r, values, err
+	}
+
+	// Store the decision values in a map
+	valuesMap := make(map[int]float64)
+	for idx, label := range model.Labels() {
+		valuesMap[label] = values[idx]
+	}
+
+	return r, valuesMap, nil
+}
+
+// Predict the label of an instance. In contrast to Predict, it also
+// returns the per-label decision values. The PredictDecisionValues
+// function is more user-friendly, but has the overhead of constructing
+// a map. If you are only interested in the classes with the highest
+// decision values, it may be better to use this function in conjunction
+// to Labels().
+func (model *Model) PredictDecisionValuesSlice(nodes []FeatureValue) (float64, []float64, error) {
 	// Allocate sparse C feature vector.
 	cn := cNodes(nodes)
 	defer C.nodes_free(cn)
 
-	labels := model.labels()
+	labels := model.Labels()
 
 	// Allocate C array for decision values.
 	values := make([]float64, len(labels))
 
 	r := C.predict_values_wrap(model.model, cn, (*C.double)(unsafe.Pointer(&values[0])))
 
-	// Store the decision values in a map
-	valuesMap := make(map[int]float64)
-	for idx, label := range labels {
-		valuesMap[label] = values[idx]
-	}
-
-	return float64(r), valuesMap, nil
+	return float64(r), values, nil
 }
 
 // Save the model to a file.
