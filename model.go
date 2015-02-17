@@ -114,7 +114,7 @@ func (model *Model) Labels() []int {
 
 	model.labelCache = make([]int, len(labels))
 	copy(model.labelCache, labels)
-	
+
 	return labels
 }
 
@@ -131,22 +131,37 @@ func (model *Model) Predict(nodes []FeatureValue) float64 {
 // given for logistic regression only. If another solver is used,
 // the probability of each class is zero.
 func (model *Model) PredictProbability(nodes []FeatureValue) (float64, map[int]float64, error) {
+	r, probs, err := model.PredictProbabilitySlice(nodes)
+	if err != nil {
+		return float64(r), nil, err
+	}
+
+	// Store the probabilities in a map
+	probMap := make(map[int]float64)
+	for idx, label := range model.Labels() {
+		probMap[label] = probs[idx]
+	}
+
+	return float64(r), probMap, nil
+}
+
+// Predict the label of an instance, given a model with probability
+// information. This method returns the label of the predicted class,
+// a map of class probabilities. Probability estimates are currently
+// given for logistic regression only. If another solver is used,
+// the probability of each class is zero.
+//
+// The PredictProbability function is more user-friendly, but has the
+// overhead of constructing a map. If you are only interested in the
+// classes with the highest probabilities, it may be better to use
+// this function in conjunction with Labels().
+func (model *Model) PredictProbabilitySlice(nodes []FeatureValue) (float64, []float64, error) {
 	// Allocate sparse C feature vector.
 	cn := cNodes(nodes)
 	defer C.nodes_free(cn)
 
-	// Allocate C array for probabilities.
-	cProbs := newProbs(model.model)
-	defer C.free(unsafe.Pointer(cProbs))
-
-	r := C.predict_probability_wrap(model.model, cn, cProbs)
-
-	// Store the probabilities in a slice
-	labels := model.Labels()
-	probs := make(map[int]float64)
-	for idx, label := range labels {
-		probs[label] = float64(C.get_double_idx(cProbs, C.int(idx)))
-	}
+	probs := make([]float64, len(model.Labels()))
+	r := C.predict_probability_wrap(model.model, cn, (*C.double)(unsafe.Pointer(&probs[0])))
 
 	return float64(r), probs, nil
 }
@@ -173,7 +188,7 @@ func (model *Model) PredictDecisionValues(nodes []FeatureValue) (float64, map[in
 // function is more user-friendly, but has the overhead of constructing
 // a map. If you are only interested in the classes with the highest
 // decision values, it may be better to use this function in conjunction
-// to Labels().
+// with Labels().
 func (model *Model) PredictDecisionValuesSlice(nodes []FeatureValue) (float64, []float64, error) {
 	// Allocate sparse C feature vector.
 	cn := cNodes(nodes)
