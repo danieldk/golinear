@@ -142,6 +142,17 @@ int *labels_new(int n)
   return labels;
 }
 
+model_t *model_new()
+{
+  model_t *model = malloc(sizeof(model_t));
+  if (model == NULL) {
+    return NULL;
+  }
+
+  memset(model, 0, sizeof(model_t));
+  return model;
+}
+
 double *probs_new(model_t *model)
 {
   int nClasses = get_nr_class(model);

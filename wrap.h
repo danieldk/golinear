@@ -30,6 +30,8 @@ void parameter_free(parameter_t *param);
 
 int *labels_new(int n);
 
+model_t *model_new();
+
 double *probs_new(model_t *model);
 double *double_new(size_t n);
 

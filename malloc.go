@@ -34,6 +34,13 @@ func newLabels(n C.int) *C.int {
 	return (*C.int)(labels)
 }
 
+func newModel() *C.model_t {
+	model := tryNew(func() unsafe.Pointer {
+		return unsafe.Pointer(C.model_new())
+	})
+	return (*C.model_t)(model)
+}
+
 func newProbs(model *C.model_t) *C.double {
 	probs := tryNew(func() unsafe.Pointer {
 		return unsafe.Pointer(C.probs_new(model))
