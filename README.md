@@ -42,21 +42,3 @@ is good enough.
 Examples for using golinear can be found at:
 
 https://github.com/danieldk/golinear-examples
-
-## Contributing
-
-We use [git-flow](https://github.com/nvie/gitflow) to ensure that master is
-always stable. If you would like to contribute changes, clone the repository
-on GitHub and then:
-
-    git clone --recursive git@github.com:<username>/golinear.git
-    cd golinear
-    git branch master origin/master
-    git flow init -d
-    git flow feature start <your feature>
-
-Make and commit your changes to golinear. Then publish your changes with:
-
-    git flow feature publish <your feature>
-
-And open a pull request.
