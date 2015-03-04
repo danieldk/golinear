@@ -1,12 +1,9 @@
 ## Introduction
 
-[![GoDoc](https://godoc.org/github.com/danieldk/golinear?status.svg)](https://godoc.org/github.com/danieldk/golinear)
+[![GoDoc](https://godoc.org/gopkg.in/danieldk/golinear.v1?status.svg)](https://godoc.org/gopkg.in/danieldk/golinear.v1)
 
 golinear is a package for training and using linear classifiers in the Go
 programming language (golang).
-
-**Note:** This package is still new, its API may change, and not all
-of liblinear's functionality may be available yet.
 
 ## Installation
 
@@ -19,19 +16,23 @@ OS X, you can install this library with
 
 Ubuntu and Debian provide packages for *liblinear*. However, at the time of
 writing (July 2, 2014), these were serverly outdated. This package requires
-version 1.9.
+version 1.9 or later.
 
-This package can be installed with the <tt>go</tt> command:
+This latest API-stable version (v1) can be installed with the <tt>go</tt>
+command:
 
-    go get github.com/danieldk/golinear
+    go get http://gopkg.in/danieldk/golinear.v1
 
-The package documentation is available at: http://godoc.org/github.com/danieldk/golinear
+or included in your source code:
+
+    import "gopkg.in/danieldk/golinear.v1"
+
+The package documentation is available at: http://godoc.org/gopkg.in/danieldk/golinear.v1
 
 ## Plans
 
-1. Stabilize the API.
-2. Port classification to Go.
-3. Port training to Go.
+1. Port classification to Go.
+2. Port training to Go.
 
 We will take a pragmatic approach to porting code to Go: if the performance penalty is minor,
 ported code will flow to the main branch. Otherwise, we will keep it around until the performance
