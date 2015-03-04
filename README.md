@@ -21,7 +21,7 @@ version 1.9 or later.
 This latest API-stable version (v1) can be installed with the <tt>go</tt>
 command:
 
-    go get http://gopkg.in/danieldk/golinear.v1
+    go get gopkg.in/danieldk/golinear.v1
 
 or included in your source code:
 
