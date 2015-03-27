@@ -11,7 +11,7 @@ type Parameters struct {
 	SolverType SolverType
 
 	// The cost of constraints violation.
-	Cost C.double
+	Cost float64
 	// The relative penalty for each class.
 	RelCosts []ClassWeight
 }
@@ -145,7 +145,7 @@ func toCParameter(param Parameters) *C.parameter_t {
 
 	cParam.solver_type = param.SolverType.solverType
 	cParam.eps = param.SolverType.epsilon
-	cParam.C = param.Cost
+	cParam.C = C.double(param.Cost)
 
 	// Copy relative costs into C structure.
 	n := len(param.RelCosts)
