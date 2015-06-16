@@ -84,9 +84,9 @@ void problem_add_train_inst(problem_t *problem, feature_node_t *nodes,
   	if (node->index > problem->n)
   		problem->n = node->index;
 
-  problem->y = realloc(problem->y, problem->l * sizeof(double));
+  problem->y = realloc(problem->y, (size_t) problem->l * sizeof(double));
   problem->y[problem->l - 1] = label;
-  problem->x = realloc(problem->x, problem->l * sizeof(feature_node_t *));
+  problem->x = realloc(problem->x, (size_t) problem->l * sizeof(feature_node_t *));
   problem->x[problem->l - 1] = nodes;
 }
 
@@ -134,22 +134,22 @@ double *double_new(size_t n)
 
 int *labels_new(int n)
 {
-  int *labels = malloc(n * sizeof(int));
+  int *labels = malloc((size_t) n * sizeof(int));
   if (labels == NULL) {
     return NULL;
   }
-  memset(labels, 0, n * sizeof(int));
+  memset(labels, 0, (size_t) n * sizeof(int));
   return labels;
 }
 
 double *probs_new(model_t *model)
 {
   int nClasses = get_nr_class(model);
-  double *probs = malloc(nClasses * sizeof(double));
+  double *probs = malloc((size_t) nClasses * sizeof(double));
   if (probs == NULL) {
       return NULL;
   }
-  memset(probs, 0, nClasses * sizeof(double));
+  memset(probs, 0, (size_t) nClasses * sizeof(double));
   return probs;
 }
 

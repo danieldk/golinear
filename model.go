@@ -1,7 +1,6 @@
 package golinear
 
 /*
-#include <linear.h>
 #include <stdlib.h>
 #include "wrap.h"
 */
