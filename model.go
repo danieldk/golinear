@@ -111,7 +111,7 @@ func (model *Model) Labels() []int {
 
 	labels := make([]int, int(nClasses))
 
-	for idx, _ := range labels {
+	for idx := range labels {
 		labels[idx] = int(C.get_int_idx(cLabels, C.int(idx)))
 	}
 

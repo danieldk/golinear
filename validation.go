@@ -39,7 +39,7 @@ func CrossValidation(problem *Problem, param Parameters, nFolds uint) ([]float64
 	C.cross_validation_wrap(problem.problem, cParam, C.int(nFolds), target)
 
 	classifications := make([]float64, nInstances)
-	for idx, _ := range classifications {
+	for idx := range classifications {
 		classifications[idx] = float64(C.get_double_idx(target, C.int(idx)))
 	}
 
