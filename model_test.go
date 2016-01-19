@@ -8,10 +8,10 @@ import "testing"
 
 func simpleInstances() []TrainingInstance {
 	instances := []TrainingInstance{
-		TrainingInstance{0, FromDenseVector([]float64{1, 1, 1, 0, 0})},
-		TrainingInstance{0, FromDenseVector([]float64{0, 1, 0, 0, 0})},
-		TrainingInstance{1, FromDenseVector([]float64{1, 0, 1, 1, 1})},
-		TrainingInstance{1, FromDenseVector([]float64{0, 0, 0, 1, 1})}}
+		{0, FromDenseVector([]float64{1, 1, 1, 0, 0})},
+		{0, FromDenseVector([]float64{0, 1, 0, 0, 0})},
+		{1, FromDenseVector([]float64{1, 0, 1, 1, 1})},
+		{1, FromDenseVector([]float64{0, 0, 0, 1, 1})}}
 
 	return instances
 }
