@@ -17,7 +17,7 @@ import (
 	"unsafe"
 )
 
-// A model contains the trained model and can be used to predict the
+// A Model contains the trained model and can be used to predict the
 // class of a seen or unseen instance.
 type Model struct {
 	model *C.model_t
@@ -28,7 +28,7 @@ type Model struct {
 	labelCache []int
 }
 
-// Extracts the weight vector of a two-class problem.
+// Weights extracts the weight vector of a two-class problem.
 func (model *Model) Weights() []float64 {
 	if model.model.nr_class != 2 {
 		panic(fmt.Sprint("not exactly two classes: ", model.model.nr_class))
@@ -41,7 +41,7 @@ func (model *Model) Weights() []float64 {
 	return weights
 }
 
-// Extracts the bias of a two-class problem.
+// Bias extracts the bias of a two-class problem.
 func (model *Model) Bias() float64 {
 	if model.model.nr_class != 2 {
 		panic(fmt.Sprint("not exactly two classes: ", model.model.nr_class))
@@ -51,14 +51,14 @@ func (model *Model) Bias() float64 {
 	return float64(C.get_double_idx(model.model.w, n))
 }
 
-// Extracts the weight vectors of a multi-class problem.
+// WeightsMulti extracts the weight vectors of a multi-class problem.
 //
 // NOT IMPLEMENTED.
 func (model *Model) WeightsMulti() [][]float64 {
 	panic("not implemented")
 }
 
-// Train an SVM using the given parameters and problem.
+// TrainModel trains an SVM using the given parameters and problem.
 func TrainModel(param Parameters, problem *Problem) (*Model, error) {
 	cParam := toCParameter(param)
 	defer func() {
@@ -80,7 +80,7 @@ func TrainModel(param Parameters, problem *Problem) (*Model, error) {
 	return model, nil
 }
 
-// Load a previously saved model.
+// LoadModel loads a previously saved model.
 func LoadModel(filename string) (*Model, error) {
 	cFilename := C.CString(filename)
 	defer C.free(unsafe.Pointer(cFilename))
@@ -96,7 +96,7 @@ func LoadModel(filename string) (*Model, error) {
 	return model, nil
 }
 
-// Get a slice with class labels
+// Labels returns a slice with class labels.
 func (model *Model) Labels() []int {
 	if model.labelCache != nil {
 		labels := make([]int, len(model.labelCache))
@@ -128,11 +128,11 @@ func (model *Model) Predict(nodes []FeatureValue) float64 {
 	return float64(C.predict_wrap(model.model, cn))
 }
 
-// Predict the label of an instance, given a model with probability
-// information. This method returns the label of the predicted class,
-// a map of class probabilities. Probability estimates are currently
-// given for logistic regression only. If another solver is used,
-// the probability of each class is zero.
+// PredictProbability predict the label of an instance, given a model
+// with probability information. This method returns the label of the
+// predicted class and a map of class probabilities. Probability
+// estimates are currently given for logistic regression only. If another
+// solver is used, the probability of each class is zero.
 func (model *Model) PredictProbability(nodes []FeatureValue) (float64, map[int]float64, error) {
 	r, probs, err := model.PredictProbabilitySlice(nodes)
 	if err != nil {
@@ -148,11 +148,11 @@ func (model *Model) PredictProbability(nodes []FeatureValue) (float64, map[int]f
 	return float64(r), probMap, nil
 }
 
-// Predict the label of an instance, given a model with probability
-// information. This method returns the label of the predicted class,
-// a map of class probabilities. Probability estimates are currently
-// given for logistic regression only. If another solver is used,
-// the probability of each class is zero.
+// PredictProbabilitySlice predicts the label of an instance, given a
+// model with probability information. This method returns the label
+// of the predicted class and a slice of class probabilities. Probability
+// estimates are currently given for logistic regression only. If another
+// solver is used, the probability of each class is zero.
 //
 // The PredictProbability function is more user-friendly, but has the
 // overhead of constructing a map. If you are only interested in the
@@ -169,8 +169,8 @@ func (model *Model) PredictProbabilitySlice(nodes []FeatureValue) (float64, []fl
 	return float64(r), probs, nil
 }
 
-// Predict the label of an instance. In contrast to Predict, it also
-// returns the per-label decision values.
+// PredictDecisionValues predicts the label of an instance. In contrast
+// to Predict, it also returns the per-label decision values.
 func (model *Model) PredictDecisionValues(nodes []FeatureValue) (float64, map[int]float64, error) {
 	r, values, err := model.PredictDecisionValues(nodes)
 	if err != nil {
@@ -186,12 +186,12 @@ func (model *Model) PredictDecisionValues(nodes []FeatureValue) (float64, map[in
 	return r, valuesMap, nil
 }
 
-// Predict the label of an instance. In contrast to Predict, it also
-// returns the per-label decision values. The PredictDecisionValues
-// function is more user-friendly, but has the overhead of constructing
-// a map. If you are only interested in the classes with the highest
-// decision values, it may be better to use this function in conjunction
-// with Labels().
+// PredictDecisionValuesSlice predicts the label of an instance. In
+// contrast to Predict, it also returns the per-label decision values.
+// The PredictDecisionValues function is more user-friendly, but has
+// the overhead of constructing a map. If you are only interested in
+// the classes with the highest decision values, it may be better to
+// use this function in conjunction with Labels().
 func (model *Model) PredictDecisionValuesSlice(nodes []FeatureValue) (float64, []float64, error) {
 	// Allocate sparse C feature vector.
 	cn := cNodes(nodes)

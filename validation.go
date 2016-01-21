@@ -15,10 +15,9 @@ import (
 	"unsafe"
 )
 
-// Perform cross validation. The instances in the problem are separated
-// in the given number of folds. Each fold is sequentially evaluated
-// using the model trained with the remaining folds. The slice that is
-// returned contains the predicted instance classes.
+// CrossValidation separates the problem in folds. Each fold is sequentially
+// evaluated using the model trained with the remaining folds. The slice that
+// is returned contains the predicted instance classes.
 func CrossValidation(problem *Problem, param Parameters, nFolds uint) ([]float64, error) {
 	cParam := toCParameter(param)
 	defer func() {

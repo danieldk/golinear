@@ -13,26 +13,25 @@ package golinear
 import "C"
 
 import (
-	"errors"
 	"fmt"
 	"runtime"
 	"sort"
 )
 
-// Represents a feature and its value. The Index of a feature is used
-// to uniquely identify the feature, and should start at 1.
+// FeatureValue represents a feature and its value. The Index of a feature
+// is used to uniquely identify the feature, and should start at 1.
 type FeatureValue struct {
 	Index int
 	Value float64
 }
 
-// Sparse feature vector, represented as the list (slice) of non-zero
-// features.
+// A FeatureVector is a sparse feature vector, represented as a
+// slice of non-zero features.
 type FeatureVector []FeatureValue
 
 type byIndex struct{ FeatureVector }
 
-// Training instance, consisting of the label of the instance and
+// A TrainingInstance consists of the label of the instance and
 // its feature vector. In classification, the label is an integer
 // indicating the class label. In regression, the label is the
 // target value, which can be any real number. The label is not used
@@ -42,12 +41,14 @@ type TrainingInstance struct {
 	Features FeatureVector
 }
 
-// A problem is a set of instances and corresponding labels.
+// A Problem is a set of instances and corresponding labels.
 type Problem struct {
 	problem *C.problem_t
 	insts   []*C.feature_node_t
 }
 
+// NewProblem constructs a new problem instance. Problems are used
+// to store training instances.
 func NewProblem() *Problem {
 	cProblem := newProblem()
 	problem := &Problem{cProblem, nil}
@@ -63,8 +64,8 @@ func finalizeProblem(p *Problem) {
 	C.problem_free(p.problem)
 }
 
-// Convert a dense feature vector, represented as a slice of feature
-// values to the sparse representation used by this package. The
+// FromDenseVector convert sa dense feature vector, represented as a slice
+// of feature values to the sparse representation used by this package. The
 // features will be numbered 1..len(denseVector). The following vectors
 // will be equal:
 //
@@ -90,6 +91,7 @@ func cNodes(nodes []FeatureValue) *C.feature_node_t {
 	return n
 }
 
+// Add adds a training instance to the problem.
 func (problem *Problem) Add(trainInst TrainingInstance) error {
 	if err := verifyFeatureIndices(trainInst.Features); err != nil {
 		return err
@@ -109,16 +111,20 @@ func (problem *Problem) Add(trainInst TrainingInstance) error {
 	return nil
 }
 
+// Bias return the bias term.
 func (problem *Problem) Bias() float64 {
 	return float64(C.problem_bias(problem.problem))
 }
 
+// SetBias sets the bias term. Setting this value to non-zero amounts to
+// adding an extra feature to each instance with the bias as its value.
 func (problem *Problem) SetBias(bias float64) {
 	C.set_problem_bias(problem.problem, C.double(bias))
 }
 
-// Function prototype for iteration over problems. The function should return
-// 'true' if the iteration should continue or 'false' otherwise.
+// ProblemIterFunc is the function prototype for iteration over problems.
+// The function should return 'true' if the iteration should continue or
+// 'false' otherwise.
 type ProblemIterFunc func(instance *TrainingInstance) bool
 
 // Iterate over the training instances in a problem.
@@ -154,8 +160,8 @@ func sortedFeatureVector(fv FeatureVector) FeatureVector {
 func verifyFeatureIndices(featureVector FeatureVector) error {
 	for _, fv := range featureVector {
 		if fv.Index < 1 {
-			return errors.New(
-				fmt.Sprintf("Feature index should be at least one: %d:%f", fv.Index, fv.Value))
+			return
+			fmt.Errorf("Feature index should be at least one: %d:%f", fv.Index, fv.Value)
 		}
 	}
 
