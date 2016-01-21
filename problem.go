@@ -160,8 +160,8 @@ func sortedFeatureVector(fv FeatureVector) FeatureVector {
 func verifyFeatureIndices(featureVector FeatureVector) error {
 	for _, fv := range featureVector {
 		if fv.Index < 1 {
-			return
-			fmt.Errorf("Feature index should be at least one: %d:%f", fv.Index, fv.Value)
+			return fmt.Errorf("Feature index should be at least one: %d:%f",
+				fv.Index, fv.Value)
 		}
 	}
 
