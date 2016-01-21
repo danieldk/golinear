@@ -1,5 +1,6 @@
 ## Introduction
 
+[![Report card](http://goreportcard.com/badge/danieldk/golinear)](http://goreportcard.com/report/danieldk/golinear)
 [![GoDoc](https://godoc.org/gopkg.in/danieldk/golinear.v1?status.svg)](https://godoc.org/gopkg.in/danieldk/golinear.v1)
 
 golinear is a package for training and using linear classifiers in the Go
