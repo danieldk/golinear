@@ -18,6 +18,9 @@ type Parameters struct {
 	Cost float64
 	// The relative penalty for each class.
 	RelCosts []ClassWeight
+	// The number of threads to use if liblinear is built with OpenMP support.
+	// Default value is 0 and will use all the cores.
+	NThreads int
 }
 
 // ClassWeight instances are used in the solver parameters to scale
@@ -169,7 +172,7 @@ func NewL2RL1LossSvRegressionDualDefault() SolverType {
 // L2-regularized L2-loss spport vector classification (dual) and a
 // constraint violation cost of 1.
 func DefaultParameters() Parameters {
-	return Parameters{NewL2RL2LossSvcDualDefault(), 1, nil}
+	return Parameters{NewL2RL2LossSvcDualDefault(), 1, nil, 0}
 }
 
 func toCParameter(param Parameters) *C.parameter_t {
@@ -190,6 +193,9 @@ func toCParameter(param Parameters) *C.parameter_t {
 			C.set_double_idx(cParam.weight, C.int(i), C.double(weight.Value))
 		}
 	}
+
+	// Set the number of threads to use by OpenMP.
+	C.parameter_set_nthreads(cParam, C.int(param.NThreads))
 
 	return cParam
 }

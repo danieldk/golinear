@@ -9,6 +9,10 @@
 
 #include "wrap.h"
 
+#ifdef CV_OMP
+#include <omp.h>
+#endif
+
 feature_node_t *nodes_new(size_t n)
 {
   feature_node_t *nodes = malloc((n + 1) * sizeof(feature_node_t));
@@ -112,6 +116,16 @@ parameter_t *parameter_new()
   }
   memset(param, 0, sizeof(parameter_t));
   return param;
+}
+
+void parameter_set_nthreads(parameter_t *param, int nthreads)
+{
+#ifdef CV_OMP
+  if (nthreads <= 0)
+    param->nr_thread = omp_get_max_threads();
+  else
+    param->nr_thread = nthreads;
+#endif
 }
 
 void parameter_free(parameter_t *param)

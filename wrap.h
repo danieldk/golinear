@@ -30,6 +30,7 @@ double problem_bias(problem_t *problem);
 void set_problem_bias(problem_t *problem, double bias);
 
 parameter_t *parameter_new();
+void parameter_set_nthreads(parameter_t *param, int nthreads);
 void parameter_free(parameter_t *param);
 
 int *labels_new(int n);
