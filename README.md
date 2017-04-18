@@ -30,6 +30,13 @@ or included in your source code:
 
 The package documentation is available at: http://godoc.org/gopkg.in/danieldk/golinear.v1
 
+### OpenMP
+
+If you wish to use *liblinear* with OpenMP support for multicore processing, 
+please use this command to install the package:
+
+    CGO_LDFLAGS="-lgomp" CGO_CFLAGS="-DCV_OMP" go get github.com/danieldk/golinear
+
 ## Plans
 
 1. Port classification to Go.
